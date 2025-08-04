@@ -53,6 +53,7 @@ jobs:
       - name: Rodar testes da API (Playwright)
         working-directory: server
         run: |
+          npm install
           npx playwright install --with-deps
           npx playwright test
 
