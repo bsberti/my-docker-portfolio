@@ -38,6 +38,12 @@ jobs:
         working-directory: server
         run: npm install
 
+      - name: Corrigir permissões do ts-node
+        run: chmod +x ./node_modules/.bin/ts-node
+
+      - name: Corrigir permissões do Playwright
+        run: chmod +x ./node_modules/.bin/playwright
+
       - name: Rodar migrations e seeds
         working-directory: server
         env:
