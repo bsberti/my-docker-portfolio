@@ -1,26 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import ProjectList from "./pages/ProjectList";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header style={{ background: "#282c34", padding: "1rem", color: "#fff" }}>
+        <h2>Meu Portfólio</h2>
       </header>
+      <main>
+        <ProjectList />
+      </main>
     </div>
   );
-}
+};
 
 export default App;

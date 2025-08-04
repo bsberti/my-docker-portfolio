@@ -1,16 +1,37 @@
-
 services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: devuser
+      PG_PASSWORD: devpass
+      PG_DATABASE: devdb
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
   server:
     build: ./server
     ports:
       - "5000:5000"
     volumes:
       - ./server:/app
+    depends_on:
+      - postgres
     networks:
       - app-network
 
   client:
     build: ./client
+    volumes:
+      - ./client:/app
     ports:
       - "3000:80"
     environment:
@@ -19,6 +40,9 @@ services:
       - server
     networks:
       - app-network
+
+volumes:
+  pgdata:
 
 networks:
   app-network:

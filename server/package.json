@@ -19,11 +19,13 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/knex": "^0.15.2",
     "@types/node": "^24.1.0",
     "@types/pg": "^8.15.5",
+    "playwright": "^1.54.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
