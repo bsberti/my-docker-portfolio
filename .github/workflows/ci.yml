@@ -64,12 +64,12 @@ jobs:
 
       - name: Esperar servidor da API subir
         run: |
-          n=0
-          until curl -s http://localhost:5000/api/projects > /dev/null || [ $n -ge 10 ]; do
-            echo "Aguardando API subir..."
-            n=$((n+1))
-            sleep 2
+          for i in {1..10}; do
+            curl -s http://127.0.0.1:5000/api/projects > /dev/null && echo "API pronta!" && exit 0
+            echo "Aguardando servidor subir..."
+            sleep 3
           done
+          echo "Servidor não subiu a tempo." && exit 1
 
       - name: Rodar testes da API (Playwright)
         working-directory: server
