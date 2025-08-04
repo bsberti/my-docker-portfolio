@@ -48,8 +48,8 @@ jobs:
           PG_DATABASE: devdb
         run: |
           npm install
-          npx ts-node src/scripts/create-tables.ts
-          npx ts-node src/scripts/seed.ts
+          node -r ts-node/register src/scripts/create-tables.ts
+          node -r ts-node/register src/scripts/seed.ts
 
       - name: Rodar testes da API (Playwright)
         working-directory: server
