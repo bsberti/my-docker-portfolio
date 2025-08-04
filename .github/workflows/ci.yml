@@ -47,13 +47,13 @@ jobs:
           PG_PASSWORD: devpass
           PG_DATABASE: devdb
         run: |
+          npm install
           npx ts-node src/scripts/create-tables.ts
           npx ts-node src/scripts/seed.ts
 
       - name: Rodar testes da API (Playwright)
         working-directory: server
         run: |
-          npm install
           npx playwright install --with-deps
           npx playwright test
 
