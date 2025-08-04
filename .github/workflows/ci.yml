@@ -34,14 +34,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Instalar dependências e corrigir permissões
+      # Back-end -------------------------------------------
+      - name: Instalar dependências do backend e corrigir permissões
+        working-directory: ./server
         run: |
           npm install
           chmod +x ./node_modules/.bin/ts-node
           chmod +x ./node_modules/.bin/playwright
 
       - name: Rodar migrations e seeds
-        working-directory: server
+        working-directory: ./server
         env:
           PG_HOST: localhost
           PG_PORT: 5432
@@ -49,26 +51,28 @@ jobs:
           PG_PASSWORD: devpass
           PG_DATABASE: devdb
         run: |
-          npm install
           node -r ts-node/register src/scripts/create-tables.ts
           node -r ts-node/register src/scripts/seed.ts
 
       - name: Rodar testes da API (Playwright)
-        working-directory: server
+        working-directory: ./server
         run: |
           npx playwright install --with-deps
           npx playwright test
 
-      - name: Instalar dependências do frontend
-        working-directory: client
-        run: npm install
+      # Front-end -------------------------------------------
+      - name: Instalar dependências do frontend e corrigir permissões
+        working-directory: ./client
+        run: |
+          npm install
+          chmod +x ./node_modules/.bin/playwright
 
       - name: Rodar testes da interface (Playwright)
-        working-directory: client
+        working-directory: ./client
         run: |
           npx playwright install --with-deps
           npx playwright test
 
       - name: Build frontend
-        working-directory: client
+        working-directory: ./client
         run: npm run build
