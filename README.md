@@ -128,4 +128,4 @@ npm run preview   # Preview production build
 
 ## 📫 Contact
 
-Get in touch via [LinkedIn](https://www.linkedin.com/in/your-username) or check out my portfolio!
+Get in touch via [LinkedIn](https://www.linkedin.com/in/bsberti) or check out my resume!
