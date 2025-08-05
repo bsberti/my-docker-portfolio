@@ -60,11 +60,11 @@ jobs:
       - name: Iniciar servidor da API em segundo plano
         working-directory: ./server
         run: |
-          npm run dev > server.log 2>&1 &
+          npm run dev > $GITHUB_WORKSPACE/server.log 2>&1 &
           echo "Servidor iniciado em background"
       
       - name: Verificar log do servidor
-        run: cat server.log
+        run: cat $GITHUB_WORKSPACE/server.log
       
       - name: Esperar servidor da API subir
         run: |
