@@ -8,7 +8,7 @@ async function migrate() {
       table.string("name").notNullable();
       table.json("tech").notNullable(); // Usando json no Postgres
     });
-    console.log("Tabela 'projects' criada.");
+    console.log("'projects' table created.");
   }
   process.exit(0);
 }

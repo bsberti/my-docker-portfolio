@@ -9,8 +9,28 @@ app.use(express.json());
 
 const PORT = Number(process.env.PORT) || 5000;
 
+app.post("/api/projects", async (req: Request, res: Response) => {
+  try {
+    const { name, tech } = req.body;
+
+    if (!name || !Array.isArray(tech)) {
+      return res.status(400).json({ message: "Invalid data" });
+    }
+
+    await db("projects").insert({
+      name,
+      tech: JSON.stringify(tech), // armazena como string JSON
+    });
+
+    res.status(201).json({ message: "Project created successfully" });
+  } catch (error) {
+    console.error("Error creating project:", JSON.stringify(error, null, 2));
+    res.status(500).json({ message: "Internal error when saving project" });
+  }
+});
+
 app.get('/', (_req: Request, res: Response) => {
-  res.send('API rodando! Use /api/projects para ver os projetos.');
+  res.send('API running! Use /api/projects to see projects.');
 });
 
 app.get("/api/projects", async (_req: Request, res: Response) => {
@@ -25,8 +45,8 @@ app.get("/api/projects", async (_req: Request, res: Response) => {
 
     res.json(parsedProjects);
   } catch (error) {
-    console.error("Erro ao buscar projetos:", JSON.stringify(error, null, 2));
-    res.status(500).json({ message: "Erro interno no servidor" });
+    console.error("Error when searching for projects:", JSON.stringify(error, null, 2));
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

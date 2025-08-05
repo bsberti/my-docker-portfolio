@@ -18,7 +18,7 @@ const ProjectList: React.FC = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Erro ao buscar projetos:", error);
+        console.error("Unable to find project on error:", error);
         setLoading(false);
       });
   }, []);
@@ -27,16 +27,16 @@ const ProjectList: React.FC = () => {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Projetos</h1>
+      <h1>Projects</h1>
       {projects.length === 0 ? (
-        <p>Nenhum projeto encontrado.</p>
+        <p>No projects.</p>
       ) : (
         <ul>
           {projects.map((project, index) => (
             <li key={index}>
               <strong>{project.name}</strong>
               <br />
-              <small>Tecnologias: {project.tech.join(", ")}</small>
+              <small>Technologies: {project.tech.join(", ")}</small>
             </li>
           ))}
         </ul>

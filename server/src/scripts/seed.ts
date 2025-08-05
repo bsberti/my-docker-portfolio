@@ -3,16 +3,16 @@ import db from "./db";
 async function seed() {
   await db("projects").insert([
     {
-      name: "Projeto 1",
+      name: "Project 1: Portfolio Website",
       tech: JSON.stringify(["React", "Node"]),
     },
     {
-      name: "Projeto 2",
+      name: "Project 2: E-commerce App",
       tech: JSON.stringify(["TypeScript", "Express", "Docker"]),
     },
   ]);
 
-  console.log("Dados inseridos.");
+  console.log("Data entered.");
   process.exit(0);
 }
 
