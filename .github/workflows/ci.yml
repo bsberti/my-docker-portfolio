@@ -82,11 +82,20 @@ jobs:
           npx playwright test
       
       # Front-end -------------------------------------------
-      - name: Instalar dependências do frontend
-        working-directory: ./client
+      - name: Iniciar client React em segundo plano
+        working-directory: client
         run: |
-          npm install
-          chmod +x ./node_modules/.bin/playwright
+          npm run dev > $GITHUB_WORKSPACE/client.log 2>&1 &
+
+      - name: Esperar client subir
+        run: |
+          for i in {1..10}; do
+            echo "Aguardando client subir..."
+            curl -s http://127.0.0.1:3000 > /dev/null && echo "Client pronto!" && exit 0
+            sleep 2
+          done
+          echo "Client não subiu a tempo."
+          exit 1
 
       - name: Rodar testes da interface (Playwright)
         working-directory: ./client
