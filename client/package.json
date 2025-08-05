@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "ts-node src/index.ts",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint --fix src",
