@@ -82,6 +82,12 @@ jobs:
           npx playwright test
       
       # Front-end -------------------------------------------
+      - name: Instalar dependências do frontend e corrigir permissões
+        working-directory: ./client
+        run: |
+          npm install
+          chmod +x ./node_modules/.bin/playwright
+
       - name: Iniciar client React em segundo plano
         working-directory: ./client
         run: |
@@ -89,7 +95,9 @@ jobs:
           echo "Cliente iniciado em background"
       
       - name: Verificar log do frontend
-        run: cat $GITHUB_WORKSPACE/client.log
+        run: |
+          echo "==== CLIENT.LOG ===="
+          cat $GITHUB_WORKSPACE/client.log || echo "Sem log."
 
       - name: Esperar client subir
         run: |

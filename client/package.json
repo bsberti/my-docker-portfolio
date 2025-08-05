@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "HOST=0.0.0.0 react-scripts start",
+    "dev": "CI=true HOST=0.0.0.0 PORT=3000 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint --fix src",
