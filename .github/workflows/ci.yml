@@ -87,6 +87,9 @@ jobs:
         run: |
           npm run dev > $GITHUB_WORKSPACE/client.log 2>&1 &
           echo "Cliente iniciado em background"
+      
+      - name: Verificar log do frontend
+        run: cat $GITHUB_WORKSPACE/client.log
 
       - name: Esperar client subir
         run: |
