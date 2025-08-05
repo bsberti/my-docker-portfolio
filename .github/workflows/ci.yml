@@ -60,8 +60,11 @@ jobs:
       - name: Iniciar servidor da API em segundo plano
         working-directory: server
         run: |
-          nohup npm run dev > server.log 2>&1 &
-
+          npm run dev > server.log 2>&1 &
+      
+      - name: Verificar log do servidor
+        run: cat server/server.log
+      
       - name: Esperar servidor da API subir
         run: |
           for i in {1..10}; do
