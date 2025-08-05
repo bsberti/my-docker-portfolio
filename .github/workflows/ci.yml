@@ -52,18 +52,19 @@ jobs:
           chmod +x ./node_modules/.bin/playwright
 
       - name: Rodar migrations e seeds
-        working-directory: server
+        working-directory: ./server
         run: |
           node -r ts-node/register src/scripts/create-tables.ts
           node -r ts-node/register src/scripts/seed.ts
 
       - name: Iniciar servidor da API em segundo plano
-        working-directory: server
+        working-directory: ./server
         run: |
           npm run dev > server.log 2>&1 &
+          echo "Servidor iniciado em background"
       
       - name: Verificar log do servidor
-        run: cat server/server.log
+        run: cat server.log
       
       - name: Esperar servidor da API subir
         run: |
@@ -75,24 +76,24 @@ jobs:
           echo "Servidor não subiu a tempo." && exit 1
 
       - name: Rodar testes da API (Playwright)
-        working-directory: server
+        working-directory: ./server
         run: |
           npx playwright install --with-deps
           npx playwright test
       
       # Front-end -------------------------------------------
       - name: Instalar dependências do frontend
-        working-directory: client
+        working-directory: ./client
         run: |
           npm install
           chmod +x ./node_modules/.bin/playwright
 
       - name: Rodar testes da interface (Playwright)
-        working-directory: client
+        working-directory: ./client
         run: |
           npx playwright install --with-deps
           npx playwright test
 
       - name: Build frontend
-        working-directory: client
+        working-directory: ./client
         run: npm run build
