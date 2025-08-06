@@ -33,11 +33,20 @@ const AdminPage: React.FC = () => {
     setLoading(true);
     setError(null);
     setSuccess(null);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to add a project.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/projects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Aqui está o token
         },
         body: JSON.stringify({ name, tech: techList }),
       });
@@ -76,7 +85,7 @@ const AdminPage: React.FC = () => {
           onKeyDown={(e) => e.key === "Enter" && handleAddTech()}
         />
         <Button variant="contained" onClick={handleAddTech}>
-          Adicionar
+          Add
         </Button>
       </Box>
 
