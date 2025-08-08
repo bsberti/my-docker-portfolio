@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs"; // Usando bcryptjs
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { authenticateToken } from "./middleware/auth";
+import multer from "multer";
+import path from "path";
 
 dotenv.config(); // Carrega variáveis do .env
 
@@ -19,6 +21,22 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = Number(process.env.PORT) || 5000;
+
+app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
+// Define onde e como salvar os arquivos
+const storage = multer.diskStorage({
+  destination: function (_req, _file, cb) {
+    cb(null, path.join(__dirname, "public/uploads")); // pasta pública para imagens
+  },
+  filename: function (_req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
+  },
+});
+
+const upload = multer({ storage });
 
 // POST /api/register
 app.post("/api/register", async (req: Request, res: Response) => {
@@ -75,25 +93,51 @@ app.post("/api/login", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/api/projects", authenticateToken, async (req: Request, res: Response) => {
-  try {
-    const { name, tech } = req.body;
+// Rota POST para criar projeto com upload múltiplo
+app.post(
+  "/api/projects",
+  authenticateToken,
+  upload.fields([
+    { name: "image1", maxCount: 1 },
+    { name: "image2", maxCount: 1 },
+    { name: "image3", maxCount: 1 },
+  ]),
+  async (req: Request, res: Response) => {
+    try {
+      const { name, tech, year } = req.body;
+      if (!name || !tech) {
+        return res.status(400).json({ message: "Missing name or tech" });
+      }
 
-    if (!name || !Array.isArray(tech)) {
-      return res.status(400).json({ message: "Invalid data" });
+      // tech chega como string JSON (pois multipart/form-data), parseia
+      const techArray = typeof tech === "string" ? JSON.parse(tech) : tech;
+
+      // Imagens salvas via multer
+      const images = req.files as {
+        [fieldname: string]: Express.Multer.File[];
+      };
+
+      // Monta URLs públicas das imagens
+      const image1 = images?.image1 ? images.image1[0].filename : null;
+      const image2 = images?.image2 ? images.image2[0].filename : null;
+      const image3 = images?.image3 ? images.image3[0].filename : null;
+
+      await db("projects").insert({
+        name,
+        tech: JSON.stringify(techArray),
+        year: year ? Number(year) : null,
+        image1,
+        image2,
+        image3,
+      });
+
+      res.status(201).json({ message: "Project created with images" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    await db("projects").insert({
-      name,
-      tech: JSON.stringify(tech),
-    });
-
-    res.status(201).json({ message: "Project created successfully" });
-  } catch (error) {
-    console.error("Error creating project:", JSON.stringify(error, null, 2));
-    res.status(500).json({ message: "Internal error when saving project" });
   }
-});
+);
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('API running! Use /api/projects to see projects.');
@@ -101,12 +145,16 @@ app.get('/', (_req: Request, res: Response) => {
 
 app.get("/api/projects", async (_req: Request, res: Response) => {
   try {
-    const projects = await db("projects").select("name", "tech");
+    const projects = await db("projects").select("*");
 
-    // Se tech estiver como string JSON, faça parse:
-    const parsedProjects = projects.map(p => ({
-      ...p,
+    const parsedProjects = projects.map((p) => ({
+      id: p.id,
+      name: p.name,
       tech: typeof p.tech === "string" ? JSON.parse(p.tech) : p.tech,
+      year: p.year,
+      image1: p.image1,
+      image2: p.image2,
+      image3: p.image3,
     }));
 
     res.json(parsedProjects);
