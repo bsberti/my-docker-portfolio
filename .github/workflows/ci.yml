@@ -56,6 +56,8 @@ jobs:
         run: |
           node -r ts-node/register src/scripts/create-tables.ts
           node -r ts-node/register src/scripts/seed.ts
+          echo "Verificando projetos no banco..."
+          npx ts-node src/scripts/check-projects.ts
 
       - name: Iniciar servidor da API em segundo plano
         working-directory: ./server
